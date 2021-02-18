@@ -1,6 +1,5 @@
 class PrototypesController < ApplicationController
   before_action :authenticate_user!, only: [:create, :edit, :destroy, :new, :update]
-  # before_action :authenticate_user!, except: [:index, :show]
   before_action :move_to_index, except: [:index, :show]
 
   def index
@@ -22,12 +21,17 @@ class PrototypesController < ApplicationController
     @comments = @prototype.comments.includes(:user)
   end
   
-    def new
-      @prototype = Prototype.new
-    end
+  def new
+    @prototype = Prototype.new
+  end
 
   def edit
     @prototype = Prototype.find(params[:id])
+    if @prototype.user == current_user
+      render "edit"
+    else
+      redirect_to root_path
+    end
   end
 
   def update
